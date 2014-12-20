@@ -22,21 +22,14 @@ namespace Graphite
 
         public void Send(string path, int value, DateTime timeStamp)
         {
-            try
+            if (!string.IsNullOrWhiteSpace(KeyPrefix))
             {
-                if (!string.IsNullOrWhiteSpace(KeyPrefix))
-                {
-                    path = KeyPrefix+ "." + path;
-                }
+                path = KeyPrefix+ "." + path;
+            }
                 
-                var message = new PlaintextMessage(path, value, timeStamp).ToByteArray();
+            var message = new PlaintextMessage(path, value, timeStamp).ToByteArray();
 
-                _udpClient.Send(message, message.Length);
-            }
-            catch
-            {
-                // Supress all exceptions for now.
-            }
+            _udpClient.Send(message, message.Length);
         }
 
         #region IDisposable
