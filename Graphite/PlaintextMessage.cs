@@ -6,10 +6,10 @@ namespace Graphite
     public class PlaintextMessage
     {
         public string Path { get; private set; }
-        public int Value { get; private set; }
+        public long Value { get; private set; }
         public long Timestamp { get; private set; }
 
-        public PlaintextMessage(string path, int value, DateTime timestamp)
+        public PlaintextMessage(string path, long value, DateTime timestamp)
         {
             if(path == null)
             {

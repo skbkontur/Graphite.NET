@@ -4,12 +4,12 @@ namespace Graphite
 {
     public interface IGraphiteClient
     {
-        void Send(string path, int value, DateTime timeStamp);
+        void Send(string path, long value, DateTime timeStamp);
     }
 
     public static class IGraphiteClientExtensions
     {
-        public static void Send(this IGraphiteClient self, string path, int value)
+        public static void Send(this IGraphiteClient self, string path, long value)
         {
             self.Send(path, value, DateTime.Now);
         }

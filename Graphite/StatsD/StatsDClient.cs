@@ -23,6 +23,21 @@ namespace Graphite.StatsD
             return MaybeSend(sampleRate, string.Format("{0}:{1}|ms", key, value));
         }
 
+        public bool Timing(long value, params string[] keys)
+        {
+            return Timing(value, 1.0, keys);
+        }
+
+        public bool Timing(long value, double sampleRate, params string[] keys)
+        {
+            var stats = new string[keys.Length];
+
+            for(var i = 0; i < keys.Length; i++)
+                stats[i] = string.Format("{0}:{1}|ms", keys[i], value);
+
+            return MaybeSend(sampleRate, stats);
+        }
+
         public bool Decrement(string key, int magnitude = -1, double sampleRate = 1.0)
         {
             magnitude = magnitude < 0 ? magnitude : -magnitude;
@@ -104,24 +119,16 @@ namespace Graphite.StatsD
 
         private bool Send(string message)
         {
-            try
+            if(!string.IsNullOrWhiteSpace(_keyPrefix))
             {
-                if(!string.IsNullOrWhiteSpace(_keyPrefix))
-                {
-                    message = _keyPrefix + "." + message;
-                }
+                message = _keyPrefix + "." + message;
+            }
 
-                var data = Encoding.UTF8.GetBytes(message);
+            var data = Encoding.UTF8.GetBytes(message);
 
-                _client.Send(data, data.Length);
+            _client.Send(data, data.Length);
                 
-                return true;
-            }
-            catch
-            {
-                // Suppress all exceptions for now
-                return false;
-            }
+            return true;
         }
 
         #region IDisposable
